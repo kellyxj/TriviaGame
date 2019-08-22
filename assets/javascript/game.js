@@ -67,9 +67,88 @@ const game = {
     }
 }
 
-$(document).ready(function () {
-    
-    $(document).on("keyup", function () {
+let currentIndex = -2;
+let interval;
+let timeout;
 
+function countdown() {
+    clearInterval(interval);
+    interval = setInterval(() => {
+        $("#progressBar").val(parseInt($("#progressBar").val())-1);
+    },250);
+    clearTimeout(timeout);
+    timeout = setTimeout(nextQuestion("timeup"), 30000);
+}
+
+function displayQuestion() {
+    
+    $("#choiceHolder").empty();
+    $("#progressBar").val(120);
+    game.questions[currentIndex].displayAnswerChoices().forEach(choice => {
+        choiceButton = $("<button class = 'answerChoice'></button>");
+        choiceButton.text(choice);
+        choiceButton.val(choice);
+        $("#choiceHolder").append(choiceButton);
+    })
+    countdown();
+}
+
+function nextQuestion(input) {
+    function next() {
+        currentIndex++;
+        if(input === "timeup") {
+            $("#timeUp").removeClass("hidden");
+            $("#questionDisplay").addClass("hidden");
+            setTimeout(() => {
+                $("#timeUp").addClass("hidden");
+                $("#questionDisplay").removeClass("hidden");
+            },5000);
+        }
+        else if(input) {
+            game.playerScore++;
+            $("#rightAnswer").removeClass("hidden");
+            $("#questionDisplay").addClass("hidden");
+            setTimeout(() => {
+                $("#rightAnswer").addClass("hidden");
+                $("#questionDisplay").removeClass("hidden");
+            },5000);
+        }
+        else{
+            $("#wrongAnswer").removeClass("hidden");
+            $("#questionDisplay").addClass("hidden");
+            setTimeout(() => {
+                $("#wrongAnswer").addClass("hidden");
+                $("#questionDisplay").removeClass("hidden");
+            },5000);
+        }
+        if(currentIndex < 10) {
+            displayQuestion(currentIndex);
+        }
+        else{
+            $("#questionDisplay").addClass("hidden");
+            console.log(game.playerScore);
+        }
+    }
+    return next;
+}
+
+$(document).ready(function () {
+game.loadQuestions();
+    $(document).on("keyup", function () {
+        if(currentIndex === -2) {
+            $("#splashScreen").addClass("hidden");
+            $("#instructions").removeClass("hidden");
+            currentIndex++;
+        }
+        else if(currentIndex === -1) {
+            $("#instructions").addClass("hidden");
+            $("#questionDisplay").removeClass("hidden");
+            currentIndex++;
+            displayQuestion();
+        }
+    });
+    $(document).on("click", ".answerChoice", function () {
+        const newQuestion = nextQuestion($(this).val() === game.questions[currentIndex].correctAnswer);
+        newQuestion();
     });
 });

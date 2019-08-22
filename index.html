@@ -16,24 +16,25 @@
 </head>
 <body>
     <div id="splashScreen">
-
+        Trivia game.
+        Press any key to start
     </div>
     <div id="instructions" class="hidden">
-
+        You will be given 10 multiple choice questions. You will have 30 seconds to answer each question.
     </div>
     <div id="questionDisplay" class="hidden">
-        <progress id = "progressBar" value = "90" max = "90"></progress>
+        <progress id = "progressBar" value = "120" max = "120"></progress>
         <div id="timerCountdown"></div>
-        <button class="answerChoice" value = ""></button>
-        <button class="answerChoice" value = ""></button>
-        <button class="answerChoice" value = ""></button>
-        <button class="answerChoice" value = ""></button>
+        <div id="choiceHolder"></div>
     </div>
     <div id="rightAnswer" class="hidden">
-
+        Correct
     </div>
     <div id="wrongAnswer" class="hidden">
-
+        Incorrect
+    </div>
+    <div id="timeUp" class="hidden">
+        Time up
     </div>
     <div id="results" class="hidden">
         <div id="correctCount"></div>
