@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <!--<script
+    <script
         src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
         crossorigin="anonymous">
-    </script>-->
+    </script>
     <script type="text/javascript" src="assets/javascript/game.js"></script>
     <link rel="stylesheet" href="assets/css/reset.css">
     <link rel="stylesheet" href="assets/css/style.css">
@@ -18,20 +18,25 @@
     <div id="splashScreen">
 
     </div>
-    <div id="instructions">
+    <div id="instructions" class="hidden">
 
     </div>
-    <div id="questionDisplay">
+    <div id="questionDisplay" class="hidden">
+        <progress id = "progressBar" value = "90" max = "90"></progress>
+        <div id="timerCountdown"></div>
+        <button class="answerChoice" value = ""></button>
+        <button class="answerChoice" value = ""></button>
+        <button class="answerChoice" value = ""></button>
+        <button class="answerChoice" value = ""></button>
+    </div>
+    <div id="rightAnswer" class="hidden">
 
     </div>
-    <div id="rightAnswer">
+    <div id="wrongAnswer" class="hidden">
 
     </div>
-    <div id="wrongAnswer">
-
-    </div>
-    <div id="results">
-
+    <div id="results" class="hidden">
+        <div id="correctCount"></div>
     </div>
 </body>
 </html>
