@@ -5,10 +5,46 @@ html, body {
 
 .container {
     height: 100%;
+    background-color: blue;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    border: solid black;
+}
+
+#questionDisplay {
+    background-color: darkslateblue;
+    padding: 10%;
+    border: solid black .4rem;
+}
+
+button {
+    background-color: blue;
+    border: solid black .1rem;
+    color: white;
+}
+
+progress {
+
+}
+
+button {
+    margin: .5%;
+}
+
+p, div, h2 {
+    color: white;
+}
+
+#questionHolder {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+h2 {
+    font-size: 200%;
+    text-emphasis: bold;
 }
 
 #questionDisplay, #wrongAnswer, #timeUp, #results, #textHolder {

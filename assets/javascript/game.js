@@ -182,6 +182,7 @@ function nextQuestion(input) {
         betweenTimeout = setTimeout(() => {
             currentIndex++;
             $("#between").addClass("hidden");
+            betweenQuestions = false;
             if(currentIndex < 10) {
                 $("#questionDisplay").removeClass("hidden");
                 displayQuestion(currentIndex);
