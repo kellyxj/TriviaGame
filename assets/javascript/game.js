@@ -125,15 +125,21 @@ const game = {
 let currentIndex = -2;
 let progressInterval;
 let questionTimeout;
+let betweenTimeout;
+let betweenQuestions = false;
+//How much time the user is given to answer each question
+const questionTimeLimit = 30000;
+//How long to wait between questions
+const betweenQuestionTime = 5000;
 
 //Controls question timeout and progress bar interval.
 function countdown() {
     clearInterval(progressInterval);
     progressInterval = setInterval(() => {
         $("#progressBar").val(parseInt($("#progressBar").val())-1);
-    },250);
+    },questionTimeLimit / 120);
     clearTimeout(questionTimeout);
-    questionTimeout = setTimeout(nextQuestion("timeup"), 30000);
+    questionTimeout = setTimeout(nextQuestion("timeup"), questionTimeLimit);
 }
 
 function displayQuestion() {
@@ -156,43 +162,37 @@ function displayQuestion() {
 function nextQuestion(input) {
     function next() {
         $("#questionDisplay").addClass("hidden");
+        $("#textHolder").text("");
+        $("#correctHolder").text("");
         if(input === "timeup") {
-            $("#timeUp").removeClass("hidden");
-            $(".correctHolder").text(game.questions[currentIndex].correctAnswer);
-            setTimeout(() => {
-                $("#timeUp").addClass("hidden");
-            },5000);
+            $("#textHolder").text("Time up. Correct answer was: ");
+            $("#correctHolder").text(game.questions[currentIndex].correctAnswer);
+            
         }
         else if(input) {
+            $("#textHolder").text("Correct");
             game.playerScore++;
-            $("#rightAnswer").removeClass("hidden");
-            setTimeout(() => {
-                $("#rightAnswer").addClass("hidden");
-            },5000);
         }
         else{
-            $("#wrongAnswer").removeClass("hidden");
-            $(".correctHolder").text(game.questions[currentIndex].correctAnswer);
-            setTimeout(() => {
-                $("#wrongAnswer").addClass("hidden");
-            },5000);
+            $("#textHolder").text("Incorrect. Correct answer was: ")
+            $("#correctHolder").text(game.questions[currentIndex].correctAnswer);
         }
-        
-        currentIndex++;
-        if(currentIndex < 10) {
-            setTimeout(() => {
+        $("#between").removeClass("hidden");
+        betweenQuestions = true;
+        betweenTimeout = setTimeout(() => {
+            currentIndex++;
+            $("#between").addClass("hidden");
+            if(currentIndex < 10) {
                 $("#questionDisplay").removeClass("hidden");
                 displayQuestion(currentIndex);
-            }, 5000);
-        }
-        else{
-            currentIndex = -1;
-            $("#correctCount").text(game.playerScore);
-            setTimeout(() => {
+            }
+            else {
+                currentIndex = -1;
+                $("#correctCount").text(game.playerScore);
                 $("#results").removeClass("hidden");
-            }, 5000)
-            game.reset();
-        }
+                game.reset();
+            }
+        },betweenQuestionTime);
     }
     return next;
 }
@@ -211,6 +211,22 @@ $(document).ready(function () {
             game.loadQuestions();
             currentIndex++;
             displayQuestion();
+        }
+        if(betweenQuestions) {
+            clearTimeout(betweenTimeout);
+            betweenQuestions = false;
+            currentIndex++;
+            $("#between").addClass("hidden");
+            if(currentIndex < 10) {
+                $("#questionDisplay").removeClass("hidden");
+                displayQuestion(currentIndex);
+            }
+            else {
+                currentIndex = -1;
+                $("#correctCount").text(game.playerScore);
+                $("#results").removeClass("hidden");
+                game.reset();
+            }
         }
     });
     $(document).on("click", ".answerChoice", function () {

@@ -11,7 +11,7 @@ html, body {
     justify-content: center;
 }
 
-#questionDisplay, #wrongAnswer, #timeUp, #results {
+#questionDisplay, #wrongAnswer, #timeUp, #results, #textHolder {
     text-align: center;
 }
 
