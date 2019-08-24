@@ -22,12 +22,6 @@ function shuffle (array) {
         tempArray.push(array[i]);
     }
     const shuffledArray = [];
-    /*
-        While tempArray is not empty, do the following:
-        1. Generate a random index (from 0 to tempArray.length-1)
-        2. Switch the value at randIndex with the last index in the array.
-        3. pop tempArray and store the popped value in shuffledArray.
-    */
     while(tempArray.length > 0) {
         const randIndex = Math.floor(Math.random()*tempArray.length);
         const temp = tempArray[randIndex];
@@ -38,18 +32,79 @@ function shuffle (array) {
     return shuffledArray;
 }
 
-//Stores all questions. 
+//Stores all questions. Questions are stored as arrays. The first value is the question text. The second value is the
+//correct answer. The next three values are incorrect answers.
 qaArray = [
-    ["q1","a","b","c","d"],
-    ["q2","a","b","c","d"],
-    ["q3","a","b","c","d"],
-    ["q4","a","b","c","d"],
-    ["q5","a","b","c","d"],
-    ["q6","a","b","c","d"],
-    ["q7","a","b","c","d"],
-    ["q8","a","b","c","d"],
-    ["q9","a","b","c","d"],
-    ["q10","a","b","c","d"]
+    [
+        "Until 1972, this tropical island was called Ceylon. Now a commonwealth republic, it is currently known as:_____",
+        "Sri Lanka",
+        "Madagascar",
+        "Barbados",
+        "New Guinea"
+    ],
+    [
+        "After Lake Baikal in Russia, this Central African lake is the second deepest and second largest (by volume) lake in the world.",
+        "Tanganyika",
+        "Victoria",
+        "Malawi",
+        "Kivu"
+    ],
+    [
+        "For his discovery of radioactivity, this French physicist shared the 1903 Nobel Prize with Marie and Pierre Curie.",
+        "Henri Becquerel",
+        "Louis de Broglie",
+        "Augustin-Jean Fresnel",
+        "Paul Langevin"
+    ],
+    [
+        "Which of the following orders of insect includes beetles?",
+        "Coleoptera",
+        "Orthoptera",
+        "Hymenoptera",
+        "Diptera"
+    ],
+    [
+        "This Ottoman Sultan was known to the West as 'The Magnificent,' but among his own people, he was called Kanuni, meaning Lawgiver.",
+        "Suleiman I",
+        "Mehmed II",
+        "Murad II",
+        "Selim III"
+    ],
+    [
+        "This fleet admiral who served the Yongle Emperor of China's Ming Dynasty led seven voyages from 1405 to 1433. On his final three voyages, he circumnavigated the horn of Africa.",
+        "Zheng He",
+        "Gan Ying",
+        "Shen Kuo",
+        "Yishiha"
+    ],
+    [
+        "This Argentine author is best known for the short-story collections Ficciones and El Aleph.",
+        "Jorge Luis Borges",
+        "Julio Cortazar",
+        "Manuel Puig",
+        "Silvina Ocampo"
+    ],
+    [
+        "This novel concerning the exploits of the eccentric Ignatius J Reilly won its author the 1981 Pulitzer Prize.",
+        "A Confederacy of Dunces",
+        "Rabbit is Rich",
+        "American Pastoral",
+        "The Orphan Master's Son"
+    ],
+    [
+        "This revolutionary video game released in 1986 was the first console title that allowed players to save their progress.",
+        "The Legend of Zelda",
+        "Super Mario Bros",
+        "Metroid",
+        "Final Fantasy"
+    ],
+    [
+        "This psychic villain from the Metal Gear series of games is famous for breaking the fourth wall. He could only be defeated by unplugging the controller.",
+        "Psycho Mantis",
+        "Mystic Scorpion",
+        "Cerebral Octopus",
+        "Mental Tarantula"
+    ]
 ];
 
 const game = {
@@ -68,22 +123,25 @@ const game = {
 }
 
 let currentIndex = -2;
-let interval;
-let timeout;
+let progressInterval;
+let questionTimeout;
 
+//Controls question timeout and progress bar interval.
 function countdown() {
-    clearInterval(interval);
-    interval = setInterval(() => {
+    clearInterval(progressInterval);
+    progressInterval = setInterval(() => {
         $("#progressBar").val(parseInt($("#progressBar").val())-1);
     },250);
-    clearTimeout(timeout);
-    timeout = setTimeout(nextQuestion("timeup"), 30000);
+    clearTimeout(questionTimeout);
+    questionTimeout = setTimeout(nextQuestion("timeup"), 30000);
 }
 
 function displayQuestion() {
     
+    $("#questionHolder").empty();
+    $("#questionHolder").text(game.questions[currentIndex].questionText);
     $("#choiceHolder").empty();
-    $("#progressBar").val(120);
+    $("#progressBar").val("120");
     game.questions[currentIndex].displayAnswerChoices().forEach(choice => {
         choiceButton = $("<button class = 'answerChoice'></button>");
         choiceButton.text(choice);
@@ -93,47 +151,53 @@ function displayQuestion() {
     countdown();
 }
 
+//Calls each time the user either answers a question or runs out of time.
+//input will be one of: "timeup", true, or false.
 function nextQuestion(input) {
     function next() {
-        currentIndex++;
+        $("#questionDisplay").addClass("hidden");
         if(input === "timeup") {
             $("#timeUp").removeClass("hidden");
-            $("#questionDisplay").addClass("hidden");
+            $(".correctHolder").text(game.questions[currentIndex].correctAnswer);
             setTimeout(() => {
                 $("#timeUp").addClass("hidden");
-                $("#questionDisplay").removeClass("hidden");
             },5000);
         }
         else if(input) {
             game.playerScore++;
             $("#rightAnswer").removeClass("hidden");
-            $("#questionDisplay").addClass("hidden");
             setTimeout(() => {
                 $("#rightAnswer").addClass("hidden");
-                $("#questionDisplay").removeClass("hidden");
             },5000);
         }
         else{
             $("#wrongAnswer").removeClass("hidden");
-            $("#questionDisplay").addClass("hidden");
+            $(".correctHolder").text(game.questions[currentIndex].correctAnswer);
             setTimeout(() => {
                 $("#wrongAnswer").addClass("hidden");
-                $("#questionDisplay").removeClass("hidden");
             },5000);
         }
+        
+        currentIndex++;
         if(currentIndex < 10) {
-            displayQuestion(currentIndex);
+            setTimeout(() => {
+                $("#questionDisplay").removeClass("hidden");
+                displayQuestion(currentIndex);
+            }, 5000);
         }
         else{
-            $("#questionDisplay").addClass("hidden");
-            console.log(game.playerScore);
+            currentIndex = -1;
+            $("#correctCount").text(game.playerScore);
+            setTimeout(() => {
+                $("#results").removeClass("hidden");
+            }, 5000)
+            game.reset();
         }
     }
     return next;
 }
 
 $(document).ready(function () {
-game.loadQuestions();
     $(document).on("keyup", function () {
         if(currentIndex === -2) {
             $("#splashScreen").addClass("hidden");
@@ -142,7 +206,9 @@ game.loadQuestions();
         }
         else if(currentIndex === -1) {
             $("#instructions").addClass("hidden");
+            $("#results").addClass("hidden");
             $("#questionDisplay").removeClass("hidden");
+            game.loadQuestions();
             currentIndex++;
             displayQuestion();
         }
@@ -151,4 +217,5 @@ game.loadQuestions();
         const newQuestion = nextQuestion($(this).val() === game.questions[currentIndex].correctAnswer);
         newQuestion();
     });
+    
 });

@@ -15,29 +15,37 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <div id="splashScreen">
-        Trivia game.
-        Press any key to start
-    </div>
-    <div id="instructions" class="hidden">
-        You will be given 10 multiple choice questions. You will have 30 seconds to answer each question.
-    </div>
-    <div id="questionDisplay" class="hidden">
-        <progress id = "progressBar" value = "120" max = "120"></progress>
-        <div id="timerCountdown"></div>
-        <div id="choiceHolder"></div>
-    </div>
-    <div id="rightAnswer" class="hidden">
-        Correct
-    </div>
-    <div id="wrongAnswer" class="hidden">
-        Incorrect
-    </div>
-    <div id="timeUp" class="hidden">
-        Time up
-    </div>
-    <div id="results" class="hidden">
-        <div id="correctCount"></div>
+    <div class="container">
+        <div id="splashScreen">
+            Trivia game.
+            Press any key to continue.
+        </div>
+        <div id="instructions" class="hidden">
+            You will be given 10 multiple choice questions. You will have 30 seconds to answer each question. Press any key to start.
+        </div>
+        <div id="questionDisplay" class="hidden">
+            <div id="questionHolder"></div>
+            <progress id = "progressBar" value = "120" max = "120"></progress>
+            <div id="timerCountdown"></div>
+            <div id="choiceHolder"></div>
+        </div>
+        <div id="rightAnswer" class="hidden skippable">
+            Correct
+        </div>
+        <div id="wrongAnswer" class="hidden skippable">
+            Incorrect. Correct answer was: 
+            <div class="correctHolder"></div>
+        </div>
+        <div id="timeUp" class="hidden skippable">
+            Time up. Correct answer was:
+            <div class="correctHolder"></div>
+        </div>
+        <div id="results" class="hidden">
+            Your score:
+            <div id="correctCount"></div>
+            <br>
+            Press any key to play again
+        </div>
     </div>
 </body>
 </html>
